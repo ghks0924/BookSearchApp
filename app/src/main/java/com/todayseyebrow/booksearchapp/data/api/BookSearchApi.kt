@@ -14,7 +14,7 @@ interface BookSearchApi {
     suspend fun searchBooks(
         @Query("query") query: String,
         @Query("sort") sort: String,
-        @Query("page") page: String,
-        @Query("size") size: String
+        @Query("page") page: Int,
+        @Query("size") size: Int
     ): Response<SearchResponse>
 }

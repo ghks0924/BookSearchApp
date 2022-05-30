@@ -2,16 +2,22 @@ package com.todayseyebrow.booksearchapp.ui.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.cepo.booksearchapp.ui.view.FavoriteFragment
 import com.cepo.booksearchapp.ui.view.SearchFragment
 import com.cepo.booksearchapp.ui.view.SettingsFragment
 import com.todayseyebrow.booksearchapp.R
+import com.todayseyebrow.booksearchapp.data.repository.BookSearchRepositoryImpl
 import com.todayseyebrow.booksearchapp.databinding.ActivityMainBinding
+import com.todayseyebrow.booksearchapp.ui.viewmodel.BookSearchViewModel
+import com.todayseyebrow.booksearchapp.ui.viewmodel.BookSearchViewModelProviderFactory
 
 class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
+
+    lateinit var bookSearchViewModel: BookSearchViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +28,10 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) { //앱이 처음 실행시에만 SearchFragment 띄워주기
             binding.bottomNavigationView.selectedItemId = R.id.fragment_search
         }
+
+        val bookSearchRepository = BookSearchRepositoryImpl()
+        val factory = BookSearchViewModelProviderFactory(bookSearchRepository)
+        bookSearchViewModel = ViewModelProvider(this, factory)[BookSearchViewModel::class.java]
     }
 
     private fun setupBottomNavigationView() {
