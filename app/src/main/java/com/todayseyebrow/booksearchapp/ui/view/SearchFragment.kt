@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todayseyebrow.booksearchapp.databinding.FragmentSearchBinding
 import com.todayseyebrow.booksearchapp.ui.adapter.BookSearchAdapter
-import com.todayseyebrow.booksearchapp.ui.adapter.BookSearchViewHolder
 import com.todayseyebrow.booksearchapp.ui.view.MainActivity
 import com.todayseyebrow.booksearchapp.ui.viewmodel.BookSearchViewModel
 import com.todayseyebrow.booksearchapp.util.Constants.SEARCH_BOOKS_TIME_DELAY
@@ -20,8 +20,8 @@ class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var bookSearchViewModel:BookSearchViewModel
-    private lateinit var bookSearchAdapter : BookSearchAdapter
+    private lateinit var bookSearchViewModel: BookSearchViewModel
+    private lateinit var bookSearchAdapter: BookSearchAdapter
 
 
     override fun onCreateView(
@@ -48,16 +48,17 @@ class SearchFragment : Fragment() {
 
     private fun searchBooks() {
         var startTime = System.currentTimeMillis()
-        var endTime : Long
+        var endTime: Long
 
-        binding.etSearch.text = Editable.Factory.getInstance().newEditable(bookSearchViewModel.query)
+        binding.etSearch.text =
+            Editable.Factory.getInstance().newEditable(bookSearchViewModel.query)
 
         binding.etSearch.addTextChangedListener { text: Editable? ->
             endTime = System.currentTimeMillis()
             if (endTime - startTime >= SEARCH_BOOKS_TIME_DELAY) { //사람의 입력시간 고려해서 100L을 준거임... 크...
                 text?.let {
                     val query = it.toString().trim()
-                    if (query.isNotEmpty()){
+                    if (query.isNotEmpty()) {
                         bookSearchViewModel.searchBooks(query)
                         bookSearchViewModel.query = query
                     }
@@ -71,9 +72,19 @@ class SearchFragment : Fragment() {
         bookSearchAdapter = BookSearchAdapter()
         binding.rvSearchResult.apply {
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            addItemDecoration(
+                DividerItemDecoration(
+                    requireContext(),
+                    DividerItemDecoration.VERTICAL
+                )
+            )
             adapter = bookSearchAdapter
+        }
+        bookSearchAdapter.setOnItemClickListener {
+            val action = SearchFragmentDirections.actionFragmentSearchToFragmentBook(it)
+            findNavController().navigate(action)
         }
     }
 
