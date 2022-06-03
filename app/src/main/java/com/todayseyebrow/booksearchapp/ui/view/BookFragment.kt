@@ -8,13 +8,16 @@ import android.view.ViewGroup
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.todayseyebrow.booksearchapp.databinding.FragmentBookBinding
+import com.todayseyebrow.booksearchapp.ui.viewmodel.BookSearchViewModel
 
 class BookFragment : Fragment() {
     private var _binding: FragmentBookBinding? = null
     private val binding get() = _binding!!
 
     private val args by navArgs<BookFragmentArgs>() // 받아서 초기화
+    private lateinit var bookSearchViewModel: BookSearchViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,11 +32,18 @@ class BookFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        bookSearchViewModel = (activity as MainActivity).bookSearchViewModel
+
         val book = args.book //받은 URL로 띄우기
         binding.webview.apply {
             webViewClient = WebViewClient()
             settings.javaScriptEnabled = true
             loadUrl(book.url)
+        }
+
+        binding.fabFavorite.setOnClickListener {
+            bookSearchViewModel.saveBook(book)
+            Snackbar.make(view, "Book has saved", Snackbar.LENGTH_SHORT).show()
         }
     }
 

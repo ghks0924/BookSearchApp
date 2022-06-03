@@ -12,6 +12,7 @@ import com.cepo.booksearchapp.ui.view.FavoriteFragment
 import com.cepo.booksearchapp.ui.view.SearchFragment
 import com.cepo.booksearchapp.ui.view.SettingsFragment
 import com.todayseyebrow.booksearchapp.R
+import com.todayseyebrow.booksearchapp.data.db.BookSearchDatabase
 import com.todayseyebrow.booksearchapp.data.repository.BookSearchRepositoryImpl
 import com.todayseyebrow.booksearchapp.databinding.ActivityMainBinding
 import com.todayseyebrow.booksearchapp.ui.viewmodel.BookSearchViewModel
@@ -39,7 +40,8 @@ class MainActivity : AppCompatActivity() {
 //        }
         setupJetpackNavigation()
 
-        val bookSearchRepository = BookSearchRepositoryImpl()
+        val database = BookSearchDatabase.getInstance(this)
+        val bookSearchRepository = BookSearchRepositoryImpl(database)
         val factory = BookSearchViewModelProviderFactory(bookSearchRepository, this)
         bookSearchViewModel = ViewModelProvider(this, factory)[BookSearchViewModel::class.java]
     }

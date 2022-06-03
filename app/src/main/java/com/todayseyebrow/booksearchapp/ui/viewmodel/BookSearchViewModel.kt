@@ -1,6 +1,7 @@
 package com.todayseyebrow.booksearchapp.ui.viewmodel
 
 import androidx.lifecycle.*
+import com.todayseyebrow.booksearchapp.data.model.Book
 
 import com.todayseyebrow.booksearchapp.data.model.SearchResponse
 import com.todayseyebrow.booksearchapp.data.repository.BookSearchRepository
@@ -25,6 +26,17 @@ class BookSearchViewModel(
             }
         }
     }
+
+    // Room
+    fun saveBook(book: Book) = viewModelScope.launch(Dispatchers.IO) {
+        bookSearchRepository.insertBooks(book)
+    }
+
+    fun deleteBook(book: Book) = viewModelScope.launch(Dispatchers.IO) {
+        bookSearchRepository.deleteBooks(book)
+    }
+
+    val favoriteBooks: LiveData<List<Book>> = bookSearchRepository.getFavoriteBooks()
 
     // SavedState
     var query = String()
